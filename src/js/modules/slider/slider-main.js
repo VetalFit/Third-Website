@@ -33,23 +33,18 @@ export default class MainSlider extends Slider {
 		});
 
 		this.slides[this.slideIndex - 1].style.display = 'block';
-		Array.from(this.slides).forEach(slide => {
-			slide.classList.add('animated', 'fadeInUp');
-		});
-
 	}
 
 	plusSlides(n) {
 		this.showSlides(this.slideIndex += n);
 	}
 
-	render() {
-		try {
-			this.hanson = document.querySelector('.hanson');
-		} catch (e) { };
-
+	bindTriggers() {
 		this.btns.forEach(btn => {
 			btn.addEventListener('click', () => {
+				Array.from(this.slides).forEach(slide => {
+					slide.classList.add('animated', 'bounceInUp');
+				});
 				this.plusSlides(1);
 			});
 
@@ -58,9 +53,33 @@ export default class MainSlider extends Slider {
 
 				this.slideIndex = 1;
 				this.showSlides(this.slideIndex);
-			})
+			});
 		});
+	}
 
-		this.showSlides(this.slideIndex);
+	bindTriggersModules(trigger) {
+		document.querySelectorAll(trigger).forEach(item => {
+			item.addEventListener('click', (e) => {
+				Array.from(this.slides).forEach(slide => {
+					slide.classList.remove('bounceInUp');
+				});
+				e.stopPropagation();
+				e.preventDefault();
+				this.plusSlides(1);
+			});
+		});
+	}
+
+	render() {
+		if (this.container) {
+			try {
+				this.hanson = document.querySelector('.hanson');
+			} catch (e) { };
+
+			this.showSlides(this.slideIndex);
+			this.bindTriggers();
+			this.bindTriggersModules('.prevmodule');
+			this.bindTriggersModules('.nextmodule');
+		};
 	};
 }
